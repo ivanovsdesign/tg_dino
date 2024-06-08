@@ -8,68 +8,66 @@
   
   <script lang="ts">
   import Vue from 'vue';
-  import Component from 'vue-class-component';
   
-  @Component
-  export default class DinoGame extends Vue {
-    dinoY: number = 0;
-    cactusX: number = 400;
-    score: number = 0;
-    isJumping: boolean = false;
-    gameInterval: number | null = null;
-  
+  export default Vue.extend({
+    data() {
+      return {
+        dinoY: 0,
+        cactusX: 400,
+        score: 0,
+        isJumping: false,
+        gameInterval: null as number | null,
+      };
+    },
     mounted() {
-      this.$el.focus();
+      (this.$el as HTMLElement).focus();
       this.startGame();
-    }
+    },
+    methods: {
+      startGame() {
+        this.gameInterval = setInterval(this.gameLoop, 20);
+      },
+      gameLoop() {
+        this.cactusX -= 5;
+        if (this.cactusX < -20) {
+          this.cactusX = 400;
+          this.score++;
+        }
   
-    startGame() {
-      this.gameInterval = setInterval(this.gameLoop, 20);
-    }
+        if (this.isJumping) {
+          this.dinoY += 10;
+          if (this.dinoY >= 150) {
+            this.isJumping = false;
+          }
+        } else if (this.dinoY > 0) {
+          this.dinoY -= 10;
+        }
   
-    gameLoop() {
-      this.cactusX -= 5;
-      if (this.cactusX < -20) {
+        this.checkCollision();
+      },
+      jump() {
+        if (this.dinoY === 0) {
+          this.isJumping = true;
+        }
+      },
+      checkCollision() {
+        if (this.cactusX < 50 && this.cactusX > 0 && this.dinoY < 50) {
+          if (this.gameInterval) {
+            clearInterval(this.gameInterval);
+          }
+          alert('Game Over! Your score: ' + this.score);
+          this.resetGame();
+        }
+      },
+      resetGame() {
+        this.dinoY = 0;
         this.cactusX = 400;
-        this.score++;
-      }
-  
-      if (this.isJumping) {
-        this.dinoY += 10;
-        if (this.dinoY >= 150) {
-          this.isJumping = false;
-        }
-      } else if (this.dinoY > 0) {
-        this.dinoY -= 10;
-      }
-  
-      this.checkCollision();
-    }
-  
-    jump() {
-      if (this.dinoY === 0) {
-        this.isJumping = true;
+        this.score = 0;
+        this.isJumping = false;
+        this.startGame();
       }
     }
-  
-    checkCollision() {
-      if (this.cactusX < 50 && this.cactusX > 0 && this.dinoY < 50) {
-        if (this.gameInterval) {
-          clearInterval(this.gameInterval);
-        }
-        alert('Game Over! Your score: ' + this.score);
-        this.resetGame();
-      }
-    }
-  
-    resetGame() {
-      this.dinoY = 0;
-      this.cactusX = 400;
-      this.score = 0;
-      this.isJumping = false;
-      this.startGame();
-    }
-  }
+  });
   </script>
   
   <style scoped>
