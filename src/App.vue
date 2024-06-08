@@ -10,6 +10,15 @@ import DinoGame from './components/DinoGame.vue'
 </template>
 
 <style scoped>
+body {
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  padding: 0;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
