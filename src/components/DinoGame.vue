@@ -6,21 +6,19 @@
     </div>
   </template>
   
-  <script lang="ts">
-  import Vue from 'vue';
-  
-  export default Vue.extend({
+  <script>
+  export default {
     data() {
       return {
         dinoY: 0,
         cactusX: 400,
         score: 0,
         isJumping: false,
-        gameInterval: null as number | null,
+        gameInterval: null,
       };
     },
     mounted() {
-      (this.$el as HTMLElement).focus();
+      this.$el.focus();
       this.startGame();
     },
     methods: {
@@ -52,9 +50,7 @@
       },
       checkCollision() {
         if (this.cactusX < 50 && this.cactusX > 0 && this.dinoY < 50) {
-          if (this.gameInterval) {
-            clearInterval(this.gameInterval);
-          }
+          clearInterval(this.gameInterval);
           alert('Game Over! Your score: ' + this.score);
           this.resetGame();
         }
@@ -65,21 +61,19 @@
         this.score = 0;
         this.isJumping = false;
         this.startGame();
-      }
-    }
-  });
+      },
+    },
+  };
   </script>
   
   <style scoped>
   #game {
-    width: 100%;
-    max-width: 600px;
+    width: 600px;
     height: 200px;
     border: 1px solid #000;
     overflow: hidden;
     position: relative;
     background-color: #f7f7f7;
-    margin: auto;
   }
   #dino {
     width: 20px;
@@ -103,22 +97,22 @@
     right: 10px;
   }
   @media (max-width: 600px) {
-    #game {
-      height: 150px;
-    }
-    #dino {
-      width: 15px;
-      height: 15px;
-      left: 25px;
-    }
-    #cactus {
-      width: 15px;
-      height: 40px;
-    }
-    #score {
-      top: 5px;
-      right: 5px;
-    }
+  #game {
+    height: 150px;
   }
+  #dino {
+    width: 15px;
+    height: 15px;
+    left: 25px;
+  }
+  #cactus {
+    width: 15px;
+    height: 40px;
+  }
+  #score {
+    top: 5px;
+    right: 5px;
+  }
+}
   </style>
   
