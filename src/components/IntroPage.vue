@@ -1,6 +1,6 @@
 <template>
     <div id="intro">
-      <img src="/src/assets/splash_transparent.png" alt="Logo" id="logo" />
+      <img src="src/assets/splash_transparent.png" alt="Logo" id="logo" />
       <button @click="startGame">Start Game</button>
     </div>
   </template>

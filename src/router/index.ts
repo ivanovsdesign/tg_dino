@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import IntroPage from '/src/components/IntroPage.vue';
-import GamePage from '/src/components/DinoGame.vue';
+import IntroPage from 'src/components/IntroPage.vue';
+import GamePage from 'src/components/DinoGame.vue';
 
 const routes = [
   {

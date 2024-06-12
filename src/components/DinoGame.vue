@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
-import dinoRun1 from '/src/assets/drex_run_1.png';
-import dinoRun2 from '/src/assets/drex_run_2.png';
+import dinoRun1 from 'src/assets/drex_run_1.png';
+import dinoRun2 from 'src/assets/drex_run_2.png';
 
 interface Cloud {
   id: number;
