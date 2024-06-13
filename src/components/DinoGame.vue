@@ -80,12 +80,12 @@ export default defineComponent({
     };
 
     const checkCollision = () => {
-      const dinoLeft = 70;
-      const dinoRight = dinoLeft + 128;
+      const dinoLeft = 110;
+      const dinoRight = dinoLeft + 110;
       const cactusLeft = cactusX.value;
       const cactusRight = cactusLeft + 40;
 
-      if (dinoRight > cactusLeft && dinoLeft < cactusRight && dinoY.value < 50) {
+      if (dinoRight > cactusLeft && dinoLeft < cactusRight && dinoY.value < 30) {
         if (gameInterval.value !== null) {
           clearInterval(gameInterval.value);
         }
@@ -186,7 +186,7 @@ export default defineComponent({
   background-repeat: no-repeat;
   position: absolute;
   bottom: 0;
-  left: 70px;
+  left: 120px;
 }
 
 #cactus {
@@ -206,9 +206,9 @@ export default defineComponent({
 
 @media (max-width: 600px) {
   #dino {
-    width: 30px;
-    height: 30px;
-    left: 25px;
+    width: 110px;
+    height: 70px;
+    left: 110px;
   }
   #cactus {
     width: 30px;
