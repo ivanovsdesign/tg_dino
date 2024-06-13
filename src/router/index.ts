@@ -4,12 +4,12 @@ import GamePage from '../components/DinoGame.vue';
 
 const routes = [
   {
-    path: '/',
+    path: '/tg_dino/',
     name: 'Intro',
     component: IntroPage,
   },
   {
-    path: '/game',
+    path: '/tg_dino/game',
     name: 'Game',
     component: GamePage,
   },
