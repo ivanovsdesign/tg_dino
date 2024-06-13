@@ -156,8 +156,8 @@ export default defineComponent({
 
 <style scoped>
 #game {
-  width: 70vw;
-  height: 90vh;
+  width: 90vw;
+  height: 70vh;
   overflow: hidden;
   position: relative;
   background-color: #6fbeff;
@@ -180,9 +180,10 @@ export default defineComponent({
 }
 
 #dino {
-  width: 100px;
-  height: 80px;
+  width: 120px;
+  height: 100px;
   background-size: contain;
+  background-repeat: no-repeat;
   position: absolute;
   bottom: 0;
   left: 70px;
