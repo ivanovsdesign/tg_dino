@@ -3,8 +3,8 @@
     <div id="clouds">
       <div v-for="cloud in clouds" :key="cloud.id" class="cloud" :style="{ left: cloud.x + 'px', top: cloud.y + 'px' }"></div>
     </div>
-    <div id="dino" :style="{ bottom: dinoY + 'px', backgroundImage: `url(${dinoSprite})` }"></div>
-    <div id="cactus" :style="{ left: cactusX + 'px' }"></div>
+    <div id="dino" :style="{ bottom: dino.y + 'px', backgroundImage: `url(${dino.sprite})` }"></div>
+    <div id="cactus" :style="{ left: cactus.x + 'px' }"></div>
     <div id="score">Score: {{ score }}</div>
   </div>
 </template>
@@ -14,78 +14,136 @@ import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import dinoRun1 from '../assets/drex_run_1.png';
 import dinoRun2 from '../assets/drex_run_2.png';
 
-interface Cloud {
-  id: number;
-  x: number;
-  y: number;
+class Dino {
+  public y: number;
+  private velocityY: number;
+  private gravity: number;
+  private jumpPower: number;
+  private isJumping: boolean;
+  private sprites: string[];
+  private currentSpriteIndex: number;
+  private animationCounter: number;
+  private animationSpeed: number;
+  public sprite: string;
+
+  constructor(sprites: string[], jumpPower: number, gravity: number, animationSpeed: number) {
+    this.y = 0;
+    this.velocityY = 0;
+    this.gravity = gravity;
+    this.jumpPower = jumpPower;
+    this.isJumping = false;
+    this.sprites = sprites;
+    this.currentSpriteIndex = 0;
+    this.animationCounter = 0;
+    this.animationSpeed = animationSpeed;
+    this.sprite = sprites[this.currentSpriteIndex];
+  }
+
+  jump() {
+    if (!this.isJumping) {
+      this.isJumping = true;
+      this.velocityY = this.jumpPower;
+    }
+  }
+
+  update() {
+    if (this.isJumping) {
+      this.velocityY -= this.gravity;
+      this.y += this.velocityY;
+      if (this.y <= 0) {
+        this.y = 0;
+        this.isJumping = false;
+        this.velocityY = 0;
+      }
+    } else {
+      this.animationCounter++;
+      if (this.animationCounter >= this.animationSpeed) {
+        this.currentSpriteIndex = (this.currentSpriteIndex + 1) % this.sprites.length;
+        this.sprite = this.sprites[this.currentSpriteIndex];
+        this.animationCounter = 0;
+      }
+    }
+  }
+}
+
+class Cactus {
+  public x: number;
+  private speed: number;
+
+  constructor(speed: number, initialX: number) {
+    this.x = initialX;
+    this.speed = speed;
+  }
+
+  update() {
+    this.x -= this.speed;
+    if (this.x < -40) {
+      this.x = window.innerWidth - 40;
+    }
+  }
+}
+
+class Cloud {
+  public id: number;
+  public x: number;
+  public y: number;
+  private speed: number;
+
+  constructor(id: number, x: number, y: number, speed: number) {
+    this.id = id;
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+  }
+
+  update() {
+    this.x -= this.speed;
+    if (this.x < -100) {
+      this.x = window.innerWidth + 100;
+      this.y = Math.random() * 100;
+    }
+  }
 }
 
 export default defineComponent({
   name: 'GamePage',
   setup() {
-    const dinoY = ref(0);
-    const velocityY = ref(0);
-    const gravity = 1;
-    const jumpPower = 20;
-    const cactusX = ref(window.innerWidth - 40);
-    const score = ref(0);
-    const isJumping = ref(false);
-    const gameInterval = ref<number | null>(null);
+    const dinoSprites = [dinoRun1, dinoRun2];
+    const dino = new Dino(dinoSprites, 20, 1, 10);
+    const cactus = new Cactus(5, window.innerWidth - 40);
     const clouds = ref<Cloud[]>([]);
     const cloudCount = 5;
-    const dinoSprites = [dinoRun1, dinoRun2];
-    const currentSprite = ref(0);
-    const dinoSprite = ref(dinoSprites[currentSprite.value]);
-    const animationCounter = ref(0);
-    const animationSpeed = 10;
+    const score = ref(0);
+    const gameInterval = ref<number | null>(null);
 
     const startGame = () => {
       gameInterval.value = setInterval(gameLoop, 20);
     };
 
     const gameLoop = () => {
-      cactusX.value -= 5;
+      cactus.update();
       moveClouds();
-      if (cactusX.value < -40) {
-        cactusX.value = window.innerWidth - 40;
-        score.value++;
-      }
+      dino.update();
 
-      if (isJumping.value) {
-        velocityY.value -= gravity;
-        dinoY.value += velocityY.value;
-        if (dinoY.value <= 0) {
-          dinoY.value = 0;
-          isJumping.value = false;
-          velocityY.value = 0;
-        }
-      } else {
-        // Handle animation speed
-        animationCounter.value++;
-        if (animationCounter.value >= animationSpeed) {
-          currentSprite.value = (currentSprite.value + 1) % dinoSprites.length;
-          dinoSprite.value = dinoSprites[currentSprite.value];
-          animationCounter.value = 0;
-        }
+      if (cactus.x < -40) {
+        cactus.x = window.innerWidth - 40;
+        score.value++;
       }
 
       checkCollision();
     };
 
     const jump = () => {
-      if (!isJumping.value) {
-        isJumping.value = true;
-        velocityY.value = jumpPower;
-      }
+      dino.jump();
     };
 
     const checkCollision = () => {
       const dinoLeft = 110;
-      const dinoRight = dinoLeft + 110;
-      const cactusLeft = cactusX.value;
+      const dinoRight = dinoLeft + 130;
+      const cactusLeft = cactus.x;
       const cactusRight = cactusLeft + 40;
 
-      if (dinoRight > cactusLeft && dinoLeft < cactusRight && dinoY.value < 30) {
+      if (dinoRight > cactusLeft && dinoLeft < cactusRight && dino.y < 30) {
         if (gameInterval.value !== null) {
           clearInterval(gameInterval.value);
         }
@@ -95,36 +153,24 @@ export default defineComponent({
     };
 
     const resetGame = () => {
-      dinoY.value = 0;
-      cactusX.value = window.innerWidth - 40;
+      dino.y = 0;
+      cactus.x = window.innerWidth - 40;
       score.value = 0;
-      isJumping.value = false;
-      velocityY.value = 0;
       startGame();
     };
 
     const updateGameSize = () => {
-      cactusX.value = window.innerWidth - 40;
+      cactus.x = window.innerWidth - 40;
     };
 
     const createClouds = () => {
       for (let i = 0; i < cloudCount; i++) {
-        clouds.value.push({
-          id: i,
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * 100,
-        });
+        clouds.value.push(new Cloud(i, Math.random() * window.innerWidth, Math.random() * 100, 2));
       }
     };
 
     const moveClouds = () => {
-      clouds.value.forEach((cloud) => {
-        cloud.x -= 2;
-        if (cloud.x < -100) {
-          cloud.x = window.innerWidth + 100;
-          cloud.y = Math.random() * 100;
-        }
-      });
+      clouds.value.forEach(cloud => cloud.update());
     };
 
     onMounted(() => {
@@ -143,12 +189,11 @@ export default defineComponent({
     });
 
     return {
-      dinoY,
-      cactusX,
-      score,
+      dino,
+      cactus,
       clouds,
+      score,
       jump,
-      dinoSprite,
     };
   },
 });
