@@ -1,5 +1,5 @@
 <template>
-  <div id="game" @keydown.space.prevent="jump" @touchstart="jump" tabindex="0">
+  <div id="game" @keydown.space.prevent="jump" @click="jump" tabindex="0">
     <div id="background">
       <div class="bg" :style="{ left: background.x1 + 'px' }"></div>
       <div class="bg" :style="{ left: background.x2 + 'px' }"></div>
@@ -245,6 +245,7 @@ export default defineComponent({
 
     onMounted(() => {
       document.addEventListener('keydown', jump);
+      document.addEventListener('click', jump)
       window.addEventListener('resize', updateGameSize);
       createClouds();
       startGame();
@@ -288,7 +289,7 @@ export default defineComponent({
   height: 45%;
   bottom: 0;
   left: 0;
-  z-index: -2;
+  z-index: -1;
   display: flex;
   opacity: 70%;
 }
@@ -306,7 +307,7 @@ export default defineComponent({
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 0;
   opacity: 70%;
   display: flex;
 }
@@ -353,7 +354,7 @@ export default defineComponent({
   height: 30px;
   bottom: -3px;
   left: 0;
-  z-index: 0;
+  z-index: -1;
 }
 
 .ground {
