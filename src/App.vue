@@ -13,6 +13,11 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 0;
+  padding: 0;
+}
+
+.vsc_initialized {
+  margin: 0;
 }
 </style>
